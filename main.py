@@ -18,7 +18,7 @@ def apple_icon():
 
 @app.get("/")
 def read_root():
-    msg = "Welcome to the Border Proximity API. Use /add to add two numbers."
+    msg = "Welcome to the Border Proximity API. Use /getborderproximity to get distance to border information."
     return {"message": msg}
 
 #API endpoint format

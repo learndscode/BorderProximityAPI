@@ -49,7 +49,7 @@ def add(latitude: float, longitude: float, country: str):
             # Create a Google Maps path link for the closest border point
             path_link = "https://www.google.com/maps/dir/{},{}/{},{}".format(latitude, longitude, round(result[2],3), round(result[3],3))
             return {
-                "distance_mile": result[0],
+                "distance_miles": result[0],
                 "distance_km": result[1],
                 "map_path_link": path_link
             }

@@ -33,9 +33,9 @@ def add(latitude: float, longitude: float, country: str):
     # Check to see if location is within the country
     if not islocationwithincountry(latitude, longitude, country):
         if country == "United States of America":
-            return {"result": "The specified location is not within the United States."}
+            return {"notincountry": "The specified location is not within the United States."}
         else:
-            return {"result": "The specified location is not within " + country + "."}
+            return {"notincountry": "The specified location is not within " + country + "."}
 
     # Border proximity calculation logic
     result = getdistancetoborderinfo(latitude, longitude, country)

@@ -22,8 +22,13 @@ def read_root():
     return {"message": msg}
 
 #API endpoint format
-#http://127.0.0.1:8000/getborderproximity?latitude=32.78&longitude=-96.80
-#http://127.0.0.1:8000/getborderproximity?latitude=28.925&longitude=34.113
+#http://127.0.0.1:8000/getborderproximity?latitude=32.78&longitude=-96.80   // Dallas, TX
+#http://127.0.0.1:8000/getborderproximity?latitude=28.925&longitude=34.113  // Egypt
+#http://127.0.0.1:8000/getborderproximity?latitude=28.925&longitude=34.113  // Atlantic Ocean
+
+#https://borderproximityapi.onrender.com/getborderproximity?latitude=32.78&longitude=-96.80
+#https://borderproximityapi.onrender.com/getborderproximity?latitude=28.925&longitude=34.113 // Egyp
+#https://borderproximityapi.onrender.com/getborderproximity?latitude=20.0&longitude=-40.0
 
 @app.get("/getborderproximity")
 def add(latitude: float, longitude: float):

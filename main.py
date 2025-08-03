@@ -73,7 +73,7 @@ def add(latitude: float, longitude: float):
             return {
                 "distance_miles": result[0],
                 "distance_km": result[1],
-                "country": countylocresult[1],
+                "country": countyresult[1],
                 "map_path_link": path_link
             }
         else:

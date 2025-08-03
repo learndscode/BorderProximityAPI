@@ -30,35 +30,36 @@ def read_root():
 def add(latitude: float, longitude: float, country: str):
     if not isinstance(latitude, (int, float)) or not isinstance(longitude, (int, float)):
         return {"error": "Invalid latitude or longitude value."}
-    if not isinstance(country, str) or not isvalidcountry(country):
-        return {"error": "Invalid country name."}
+    #if not isinstance(country, str) or not isvalidcountry(country):
+    #    return {"error": "Invalid country name."}
     
     countylocresult = islocationwithincountry(latitude, longitude, country)
 
-    if countylocresult[1] is None:
-        return {"error": "Could not determine the country for the specified coordinates."}
-
-    # Check to see if location is within the country
     if not countylocresult[0]:
-        if country == "United States of America":
-            return {
-                "notincountry": "The specified location is not within the **United States** border. It is located in " + countylocresult[1] + ".",
-                "locatedcountry": countylocresult[1]
-            }
-        else:
-            if countylocresult[1] == "United States of America":
-                return {
-                    "notincountry": "The specified location is not within **" + country + "&#39;s** border. It is located in the United States.",
-                    "locatedcountry": "United States"
-                }
-            else:
-                return {
-                    "notincountry": "The specified location is not within **" + country + "&#39;s** border. It is located in " + countylocresult[1] + ".",
-                    "locatedcountry": countylocresult[1]
-                }
+        return {"error_water": "Could not determine the country for the specified coordinates."}
+    
+    # Check to see if location is within the country
+    # if not countylocresult[0]:
+    #     if country == "United States of America":
+    #         return {
+    #             "notincountry": "The specified location is not within the **United States** border. It is located in " + countylocresult[1] + ".",
+    #             "locatedcountry": countylocresult[1]
+    #         }
+    #     else:
+    #         if countylocresult[1] == "United States of America":
+    #             return {
+    #                 "notincountry": "The specified location is not within **" + country + "&#39;s** border. It is located in the United States.",
+    #                 "locatedcountry": "United States"
+    #             }
+    #         else:
+    #             return {
+    #                 "notincountry": "The specified location is not within **" + country + "&#39;s** border. It is located in " + countylocresult[1] + ".",
+    #                 "locatedcountry": countylocresult[1]
+    #             }
 
     # Border proximity calculation logic
-    result = getdistancetoborderinfo(latitude, longitude, country)
+    #result = getdistancetoborderinfo(latitude, longitude, country)
+    result = getdistancetoborderinfo(latitude, longitude, countylocresult[1])
 
     # If the result is None, it means the country was not found
     if result is None:
@@ -71,6 +72,7 @@ def add(latitude: float, longitude: float, country: str):
             return {
                 "distance_miles": result[0],
                 "distance_km": result[1],
+                "country": countylocresult[1],
                 "map_path_link": path_link
             }
         else:

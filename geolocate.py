@@ -11,7 +11,7 @@ def isvalidcountry(country_name):
     # Check if the country name exists in the dataset
     return country_name in world['NAME'].values
 
-def islocationwithincountry(lat, lon, country_selected):
+def islocationwithincountry(lat, lon):
     # Path to the downloaded and extracted shapefile
     shapefile_path = "data/ne_110m_admin_0_countries.shp"
 
@@ -25,11 +25,12 @@ def islocationwithincountry(lat, lon, country_selected):
 
     if not country.empty:
         # Compare the NAME column to the expected country name
-        return country.iloc[0]['NAME'] == country_selected, country.iloc[0]['NAME'] 
+        #return country.iloc[0]['NAME'] == country_selected, country.iloc[0]['NAME'] 
+        return True, country.iloc[0]['NAME']
     else:
         return False, None
 
-def getdistancetoborderinfo(lat, lon, country_selected):
+def getdistancetoborderinfo(lat, lon, country):
     rounding_digits = 1
 
     # Path to the downloaded and extracted shapefile
@@ -46,7 +47,7 @@ def getdistancetoborderinfo(lat, lon, country_selected):
     projected_point = location_gdf.iloc[0]
 
     # Get the country geometry
-    target_country = world[world['NAME'] == country_selected]
+    target_country = world[world['NAME'] == country]
 
     if target_country.empty:
         return None, None, None, None

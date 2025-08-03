@@ -37,7 +37,7 @@ def add(latitude: float, longitude: float):
     countyresult = islocationwithincountry(latitude, longitude)
 
     if not countyresult[0]:
-        return {"error_water": "Could not determine the country for the specified coordinates."}
+        return {"notincountry": "Could not determine the country for the specified coordinates."}
     
     # Check to see if location is within the country
     # if not countylocresult[0]:

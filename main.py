@@ -30,8 +30,10 @@ def add(latitude: float, longitude: float, country: str):
     if not isinstance(country, str) or not isvalidcountry(country):
         return {"error": "Invalid country name."}
     
+    countylocresult = islocationwithincountry(latitude, longitude, country)
+
     # Check to see if location is within the country
-    if not islocationwithincountry(latitude, longitude, country):
+    if not countylocresult[0]:
         if country == "United States of America":
             return {"notincountry": "The specified location is not within the United States border."}
         else:

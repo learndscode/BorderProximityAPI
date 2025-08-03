@@ -25,9 +25,9 @@ def islocationwithincountry(lat, lon, country_selected):
 
     if not country.empty:
         # Compare the NAME column to the expected country name
-        return country.iloc[0]['NAME'] == country_selected, None
+        return country.iloc[0]['NAME'] == country_selected, country.iloc[0]['NAME'] 
     else:
-        return False, country.iloc[0]['NAME'] 
+        return False, None
 
 def getdistancetoborderinfo(lat, lon, country_selected):
     rounding_digits = 1

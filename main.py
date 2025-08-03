@@ -23,6 +23,7 @@ def read_root():
 
 #API endpoint format
 #http://127.0.0.1:8000/getborderproximity?latitude=32.78&longitude=-96.80&country=United%20States%20of%20America
+#http://127.0.0.1:8000/getborderproximity?latitude=32.78&longitude=-96.80&country=Albania
 @app.get("/getborderproximity")
 def add(latitude: float, longitude: float, country: str):
     if not isinstance(latitude, (int, float)) or not isinstance(longitude, (int, float)):
@@ -31,6 +32,9 @@ def add(latitude: float, longitude: float, country: str):
         return {"error": "Invalid country name."}
     
     countylocresult = islocationwithincountry(latitude, longitude, country)
+
+    if countylocresult[1] is None:
+        return {"error": "Could not determine the country for the specified location."}
 
     # Check to see if location is within the country
     if not countylocresult[0]:

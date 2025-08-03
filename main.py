@@ -27,15 +27,16 @@ def read_root():
 #http://127.0.0.1:8000/getborderproximity?latitude=28.925&longitude=34.113&country=Albania
 
 @app.get("/getborderproximity")
-def add(latitude: float, longitude: float, country: str):
+#def add(latitude: float, longitude: float, country: str):
+def add(latitude: float, longitude: float):
     if not isinstance(latitude, (int, float)) or not isinstance(longitude, (int, float)):
         return {"error": "Invalid latitude or longitude value."}
     #if not isinstance(country, str) or not isvalidcountry(country):
     #    return {"error": "Invalid country name."}
     
-    countylocresult = islocationwithincountry(latitude, longitude, country)
+    countyresult = islocationwithincountry(latitude, longitude)
 
-    if not countylocresult[0]:
+    if not countyresult[0]:
         return {"error_water": "Could not determine the country for the specified coordinates."}
     
     # Check to see if location is within the country
@@ -59,7 +60,7 @@ def add(latitude: float, longitude: float, country: str):
 
     # Border proximity calculation logic
     #result = getdistancetoborderinfo(latitude, longitude, country)
-    result = getdistancetoborderinfo(latitude, longitude, countylocresult[1])
+    result = getdistancetoborderinfo(latitude, longitude, countyresult[1])
 
     # If the result is None, it means the country was not found
     if result is None:

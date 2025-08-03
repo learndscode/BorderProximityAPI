@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from geolocate import isvalidcountry, islocationwithincountry, getdistancetoborderinfo
+from geolocate import islocationwithincountry, getdistancetoborderinfo
 
 app = FastAPI()
 
@@ -22,44 +22,20 @@ def read_root():
     return {"message": msg}
 
 #API endpoint format
-#http://127.0.0.1:8000/getborderproximity?latitude=32.78&longitude=-96.80&country=United%20States%20of%20America
-#http://127.0.0.1:8000/getborderproximity?latitude=32.78&longitude=-96.80&country=Albania
-#http://127.0.0.1:8000/getborderproximity?latitude=28.925&longitude=34.113&country=Albania
+#http://127.0.0.1:8000/getborderproximity?latitude=32.78&longitude=-96.80
+#http://127.0.0.1:8000/getborderproximity?latitude=28.925&longitude=34.113
 
 @app.get("/getborderproximity")
-#def add(latitude: float, longitude: float, country: str):
 def add(latitude: float, longitude: float):
     if not isinstance(latitude, (int, float)) or not isinstance(longitude, (int, float)):
         return {"error": "Invalid latitude or longitude value."}
-    #if not isinstance(country, str) or not isvalidcountry(country):
-    #    return {"error": "Invalid country name."}
-    
+   
     countyresult = islocationwithincountry(latitude, longitude)
 
     if not countyresult[0]:
         return {"notincountry": "Could not determine the country for the specified coordinates."}
     
-    # Check to see if location is within the country
-    # if not countylocresult[0]:
-    #     if country == "United States of America":
-    #         return {
-    #             "notincountry": "The specified location is not within the **United States** border. It is located in " + countylocresult[1] + ".",
-    #             "locatedcountry": countylocresult[1]
-    #         }
-    #     else:
-    #         if countylocresult[1] == "United States of America":
-    #             return {
-    #                 "notincountry": "The specified location is not within **" + country + "&#39;s** border. It is located in the United States.",
-    #                 "locatedcountry": "United States"
-    #             }
-    #         else:
-    #             return {
-    #                 "notincountry": "The specified location is not within **" + country + "&#39;s** border. It is located in " + countylocresult[1] + ".",
-    #                 "locatedcountry": countylocresult[1]
-    #             }
-
     # Border proximity calculation logic
-    #result = getdistancetoborderinfo(latitude, longitude, country)
     result = getdistancetoborderinfo(latitude, longitude, countyresult[1])
 
     # If the result is None, it means the country was not found

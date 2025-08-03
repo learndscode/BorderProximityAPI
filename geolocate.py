@@ -1,16 +1,6 @@
 import geopandas as gpd
 from shapely.geometry import Point
 
-def isvalidcountry(country_name):
-    # Path to the downloaded and extracted shapefile
-    shapefile_path = "data/ne_110m_admin_0_countries.shp"
-
-    # Load the shapefile
-    world = gpd.read_file(shapefile_path)
-
-    # Check if the country name exists in the dataset
-    return country_name in world['NAME'].values
-
 def islocationwithincountry(lat, lon):
     # Path to the downloaded and extracted shapefile
     shapefile_path = "data/ne_110m_admin_0_countries.shp"
@@ -26,6 +16,7 @@ def islocationwithincountry(lat, lon):
     if not country.empty:
         # Compare the NAME column to the expected country name
         #return country.iloc[0]['NAME'] == country_selected, country.iloc[0]['NAME'] 
+        print (f"Country found: {country.iloc[0]['NAME']}")
         return True, country.iloc[0]['NAME']
     else:
         return False, None

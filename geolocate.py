@@ -16,7 +16,6 @@ def islocationwithincountry(lat, lon):
     if not country.empty:
         # Compare the NAME column to the expected country name
         #return country.iloc[0]['NAME'] == country_selected, country.iloc[0]['NAME'] 
-        print (f"Country found: {country.iloc[0]['NAME']}")
         return True, country.iloc[0]['NAME']
     else:
         return False, None

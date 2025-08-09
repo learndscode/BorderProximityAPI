@@ -1,62 +1,16 @@
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+import streamlit as st
+import emoji
 
-from geolocate import islocationwithincountry, getdistancetoborderinfo
+info_page = st.Page("pages/showBorderProximity.py", title="Show Object Location Info", icon="📍")
+zones_page = st.Page("pages/manageNoEntryZones.py", title="Manage No Entry Zones",  icon="🚫")
 
-app = FastAPI()
+pg = st.navigation([info_page, zones_page])
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+st.set_page_config(
+    page_title="Border Proximity",
+    #page_icon="assets/myicon.png",  # Optional: You can also set a page icon (favicon)
+    layout="wide", # Optional: Set the layout (e.g., "wide" or "centered")
+    initial_sidebar_state="auto" # Optional: Control the initial state of the sidebar
+)
 
-@app.get("/favicon.ico")
-def favicon():
-    return FileResponse("static/favicon.ico")
-
-@app.get("/apple-touch-icon.png")
-def apple_icon():
-    return FileResponse("static/apple-touch-icon.png")
-
-@app.get("/")
-def read_root():
-    msg = "Welcome to the Border Proximity API. Use /getborderproximity to get distance to border information."
-    return {"message": msg}
-
-#API endpoint format
-#http://127.0.0.1:8000/getborderproximity?latitude=32.78&longitude=-96.80   // Dallas, TX
-#http://127.0.0.1:8000/getborderproximity?latitude=28.925&longitude=34.113  // Egypt
-#http://127.0.0.1:8000/getborderproximity?latitude=28.925&longitude=34.113  // Atlantic Ocean
-
-#https://borderproximityapi.onrender.com/getborderproximity?latitude=32.78&longitude=-96.80  // Dallas, TX
-#https://borderproximityapi.onrender.com/getborderproximity?latitude=28.925&longitude=34.113 // Egypt
-#https://borderproximityapi.onrender.com/getborderproximity?latitude=20.0&longitude=-40.0   // Atlantic Ocean
-
-@app.get("/getborderproximity")
-def add(latitude: float, longitude: float):
-    if not isinstance(latitude, (int, float)) or not isinstance(longitude, (int, float)):
-        return {"error": "Invalid latitude or longitude value."}
-   
-    countyresult = islocationwithincountry(latitude, longitude)
-
-    if not countyresult[0]:
-        return {"notincountry": "Could not determine the country for the specified coordinates."}
-    
-    # Border proximity calculation logic
-    result = getdistancetoborderinfo(latitude, longitude, countyresult[1])
-
-    # If the result is None, it means the country was not found
-    if result is None:
-        return {"error": "Country not found."}
-    else:
-        # Result array = distance_to_border_miles, distance_to_border_km, closest_lat, closest_lon
-        if result[0] is not None:
-            # Create a Google Maps path link for the closest border point
-            path_link = "https://www.google.com/maps/dir/{},{}/{},{}".format(latitude, longitude, round(result[2],3), round(result[3],3))
-            return {
-                "distance_miles": result[0],
-                "distance_km": result[1],
-                "locatedcountry": countyresult[1],
-                "map_path_link": path_link
-            }
-        else:
-            return {"error": "Could not calculate distance to border."}
-            
+pg.run()

@@ -1,9 +1,11 @@
 import geopandas as gpd
 from shapely.geometry import Point
+from pathlib import Path
 
 def islocationwithincountry(lat, lon):
     # Path to the downloaded and extracted shapefile
-    shapefile_path = "data/ne_110m_admin_0_countries.shp"
+    root_dir = Path(__file__).parent.parent  # go up two levels if needed
+    shapefile_path = root_dir / "geoshapedata" / "ne_110m_admin_0_countries.shp"
 
     # Load the shapefile
     world = gpd.read_file(shapefile_path)
@@ -24,7 +26,8 @@ def getdistancetoborderinfo(lat, lon, country):
     rounding_digits = 1
 
     # Path to the downloaded and extracted shapefile
-    shapefile_path = "data/ne_110m_admin_0_countries.shp"
+    root_dir = Path(__file__).parent.parent  # go up two levels if needed
+    shapefile_path = root_dir / "geoshapedata" / "ne_110m_admin_0_countries.shp"
 
     # Load the shapefile
     world = gpd.read_file(shapefile_path)
@@ -59,3 +62,32 @@ def getdistancetoborderinfo(lat, lon, country):
 
     # Return distance_to_border_miles, distance_to_border_km, closest_lat, closest_lon
     return distance_to_border_miles, distance_to_border_km, closest_lat, closest_lon
+
+def geoLocateObject(latitude: float, longitude: float):
+    if not isinstance(latitude, (int, float)) or not isinstance(longitude, (int, float)):
+        return {"error": "Invalid latitude or longitude value."}
+   
+    countyresult = islocationwithincountry(latitude, longitude)
+
+    if not countyresult[0]:
+        return {"notincountry": "Could not determine the country for the specified coordinates."}
+    
+    # Border proximity calculation logic
+    result = getdistancetoborderinfo(latitude, longitude, countyresult[1])
+
+    # If the result is None, it means the country was not found
+    if result is None:
+        return {"error": "Country not found."}
+    else:
+        # Result array = distance_to_border_miles, distance_to_border_km, closest_lat, closest_lon
+        if result[0] is not None:
+            # Create a Google Maps path link for the closest border point
+            path_link = "https://www.google.com/maps/dir/{},{}/{},{}".format(latitude, longitude, round(result[2],3), round(result[3],3))
+            return {
+                "distance_miles": result[0],
+                "distance_km": result[1],
+                "locatedcountry": countyresult[1],
+                "map_path_link": path_link
+            }
+        else:
+            return {"error": "Could not calculate distance to border."}
